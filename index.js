@@ -1,9 +1,12 @@
 import express from "express";
 import { users } from "./user.js";
-
+import cors from "cors"
+import bodyParser from "body-parser";
 const app = express();
 const port = 5000;
 app.use(express.json());
+app.use(cors());//allowe domain
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const result = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
@@ -20,12 +23,12 @@ app.post("/send", (req, res) => {
 });
 
 const user = {
-  name: "Arvind",
-  role: "mern dev",
-  email: "fjh@gmil.com",
-  salary: "",
-  image: "",
-  address: "",
+  name: "Raj",
+  role: "laravel dev",
+  email: "raj@gmil.com",
+  salary: "84732",
+  image: "djfhe",
+  address: "lucknow",
 };
 
 app.get("/user", (req, res) => {
@@ -44,7 +47,7 @@ app.get("/health", (req, res) => {
 app.post("/api/add-user", (req, res) => {
   users.push({ ...req.body, id: users.length + 1 });
   // if(user)
-  return res.json({
+  return res.status(201).json({
     message: "user added successfully",
     users,
   });
@@ -67,20 +70,22 @@ app.get("/api/get-user", (req, res) => {
 app.put("/api/:id/update-user", (req, res) => {
   const { id } = req.params;
   const { name, salary, email, role, address, image } = req.body;
-  const newUser = users.filter((user) => user.id == id);
 
+  const newUser = users.filter((user) => user.id == id);
+// [{}]
   if (newUser.length <= 0) {
     return res.json({
       message: "user not found",
     });
   }
+
   newUser[0].name = name || newUser[0].name;
   newUser[0].email = email || newUser[0].email;
   newUser[0].role = role || newUser[0].role;
   newUser[0].salary = salary || newUser[0].salary;
   newUser[0].address = address || newUser[0];
   newUser[0].image = image || newUser[0].image;
-  
+
   return res.json({
     message: "user updated successfully",
     users,
@@ -101,6 +106,9 @@ app.delete("/api/delete-user/:id", (req, res) => {
     users: newUsers,
   });
 });
+
+
+
 app.listen(port, () => {
   console.log(`server is running on port : http://localhost:${port}`);
 });
