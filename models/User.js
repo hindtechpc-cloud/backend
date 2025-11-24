@@ -33,4 +33,25 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// // instance methods
+// userSchema.methods.studentDetails = function () {
+//   return "userName : " + this.name + "useremail : " + this.email;
+// };
+
+// // static methods
+// userSchema.static.findByName = function (name) {
+//   // model.find
+//   return this.find({ name: new RegExp(name, "i") });
+// };
+
+// // query helpers
+// userSchema.query.byName = function (name) {
+//   return this.where({ name: new RegExp(name, "i") });
+// };
+
+// // vertual schema
+// userSchema.virtual("id").get(function () {
+//   return this.this._id.toHexString();
+// });
+
 export const User = mongoose.model("user", userSchema);

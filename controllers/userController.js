@@ -1,6 +1,7 @@
 import { response } from "express";
 import { User } from "../models/User.js";
 import { users } from "../user.js";
+import { validationResult } from "express-validator";
 
 export const addUser = async (req, res) => {
   users.push({ ...req.body, id: users.length + 1 });
@@ -81,7 +82,11 @@ export const MongoData = async (req, res) => {
 };
 
 export const addUserToMongo = async (req, res) => {
-  console.log(req.body);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json(errors.errors);
+  }
+  // console.log(req.body);
 
   try {
     const user = await User.create({ ...req.body });
@@ -98,9 +103,14 @@ export const addUserToMongo = async (req, res) => {
 };
 
 export const updateUserToMongo = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json(errors.errors);
+  }
   const { name, role, salary, address, email, image } = req.body;
   const id = req.params.id;
-  console.log(typeof id);
+
+  // console.log(typeof id);
   try {
     // const user = await User.findById();
     // console.log(user)
@@ -126,19 +136,17 @@ export const updateUserToMongo = async (req, res) => {
       role,
       image,
     });
-    return res.json({
+    return res.status(200).json({
       message: "user updated successfully",
       updatedUser,
     });
   } catch (error) {
-    return res.json({
+    return res.status(500).json({
       message: "server error",
       error: error.message,
     });
   }
 };
-
-
 
 export const deleteUserToMongo = async (req, res) => {
   const { id } = req.params;
